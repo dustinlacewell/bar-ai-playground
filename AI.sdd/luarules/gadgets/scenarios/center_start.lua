@@ -35,12 +35,12 @@ return {
     name = "Commander vs Commander",
     description = "Both commanders start near map center for quick combat",
     
-    events = {
-        {
-            frame = 900 / 3,  -- 30 seconds
-            action = SendNukes
-        }
-    },
+    -- events = {
+    --     {
+    --         frame = 900 / 3,  -- 30 seconds
+    --         action = SendNukes
+    --     }
+    -- },
     
     teams = {
         {

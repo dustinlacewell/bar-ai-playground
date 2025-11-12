@@ -10,6 +10,12 @@ function gadget:GetInfo()
     }
 end
 
+-- Only valid in synced; we call Spring.CreateUnit here
+if not gadgetHandler:IsSyncedCode() then
+    Spring.Echo("[ScenarioLoader] Unsynced code - disabled")
+    return
+end
+
 -- ============================================================================
 -- Configuration
 -- ============================================================================
@@ -99,6 +105,8 @@ local function ValidateScenario(scenario)
                 end
             end
         end
+        -- teleports done; signal readiness for AIs
+        GG.scenarioReady = true
     end
     
     Echo("Scenario '" .. (scenario.name or "unknown") .. "' validated successfully")
@@ -325,6 +333,10 @@ function gadget:GameStart()
     
     -- Store scenario data for GameFrame to use
     scenarioData = scenario
+    -- If there are no teleports to perform, mark ready immediately
+    if not (scenario.teams and #scenario.teams > 0) then
+        GG.scenarioReady = true
+    end
 end
 
 -- ============================================================================

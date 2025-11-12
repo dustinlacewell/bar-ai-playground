@@ -18,6 +18,7 @@ if not gadgetHandler:IsSyncedCode() then
 end
 
 local aiModules = {}
+local readyTeams = {}
 
 local function SafeCall(mod, fname, ...)
     local f = mod and mod[fname]
@@ -109,8 +110,15 @@ function gadget:GameFrame(f)
         LoadAllSelectedAIs()
     end
     for teamID, mod in pairs(aiModules) do
-        if mod.Update then
-            SafeCall(mod, 'Update', f)
+        -- Wait for scenario readiness before updating bots; also skip frame 1 to avoid ordering races
+        if GG and GG.scenarioReady and f > 1 then
+            if not readyTeams[teamID] then
+                readyTeams[teamID] = true
+                if mod.Ready then SafeCall(mod, 'Ready', teamID) end
+            end
+            if mod.Update then
+                SafeCall(mod, 'Update', f)
+            end
         end
     end
 end
